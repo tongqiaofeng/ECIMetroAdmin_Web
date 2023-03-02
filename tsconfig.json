@@ -1,0 +1,35 @@
+{
+	"compilerOptions": {
+		"target": "ES6", // 目标语言
+		"useDefineForClassFields": true,
+		"module": "esnext", // 生成代码模板标准
+		"moduleResolution": "Node",
+		"strict": false, // 是否严格检查
+		"jsx": "preserve",
+		"sourceMap": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"lib": ["ESNext", "DOM"],
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": "./",
+		"paths": {
+			"@/*": ["src/*"]
+		},
+		"noEmit": true,
+		"allowJs": true,
+		"skipLibCheck": true
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.d.ts",
+		"src/**/*.tsx",
+		"src/**/*.vue",
+		"src/untils/baiduMap.js",
+		"src/untils/debuonce.js",
+		"**/*.ts", "src/utils/txMap.tsts", "src/main.ts", "src/utils/echart.js",
+		// "**/*.tsx",
+		// "components.d.ts"
+	],
+	"references": [{ "path": "./tsconfig.node.json" }]
+}
