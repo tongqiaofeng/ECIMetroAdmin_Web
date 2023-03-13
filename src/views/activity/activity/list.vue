@@ -68,6 +68,19 @@
 							<el-tag type="info" v-if="row.source == 1">服务号推送</el-tag>
 						</template>
 					</el-table-column>
+					<el-table-column label="排序" align="center" width="120">
+						<template #default="{ row }">
+							<el-input
+								type="text"
+								v-model="row.sort"
+								:input-style="inputStyle"
+								:min="0"
+								:maxlength="4"
+								oninput="value=value.replace(/[^\d]/g,'')"
+								@blur="handleSortChange(row)"
+							/>
+						</template>
+					</el-table-column>
 					<el-table-column label="类型" prop="typeName" align="center" />
 					<el-table-column label="操作" align="center" width="250">
 						<template #default="{ row }">
@@ -131,6 +144,10 @@ const formQuery = reactive({
 const activityTypeList = ref([]);
 
 const previewForm = ref({});
+
+const inputStyle: any = {
+	textAlign: 'center',
+};
 
 const saveStore = useSaveStore();
 
@@ -213,12 +230,12 @@ const confirmDel = async (delId: number) => {
 
 const handleCurrentChange = (page: number) => {
 	formQuery.page = page;
-  saveStore.setActivityParams({
-	  'page': formQuery.page,
-	  'keyword': formQuery.keyword,
-	  'pageNum': formQuery.pageNum,
-	  'source': formQuery.source,
-	  'type': formQuery.type
+	saveStore.setActivityParams({
+		page: formQuery.page,
+		keyword: formQuery.keyword,
+		pageNum: formQuery.pageNum,
+		source: formQuery.source,
+		type: formQuery.type,
 	});
 	getActivityList();
 	document.getElementById('container').scrollIntoView({ behavior: 'smooth' });
@@ -231,6 +248,17 @@ const showPreviewDialog = async (row: any) => {
 		if (res.code == 200) {
 			previewForm.value = res.data;
 		}
+	}
+};
+
+const handleSortChange = async (item: any) => {
+	let params = {
+		id: item.id,
+		sort: Number(item.sort),
+	};
+	const { data: res } = await ActivityApi.sortSave(params);
+  if (res.code == 200) {
+    getActivityList();
 	}
 };
 </script>

@@ -271,7 +271,7 @@
 						align="center"
 					>
 						<template #default="{ row }">
-							<span>{{ price(row.retailPrice) }}</span>
+							<span>{{ price(row.retailPrice || '暂无') }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column
@@ -373,7 +373,7 @@
 						align="center"
 					>
 						<template #default="{ row }">
-							<span>{{ price(row.recyclePrice) }}</span>
+							<span>{{ price(row.recyclePrice) || '暂无' }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column
@@ -606,9 +606,9 @@ const getProductCateList = async () => {
 	const { data: res } = await ProductApi.equipmentTypeListGet();
 	if (res.code == 200) {
 		if (res.data && res.data.length) {
-			const newlist = res.data.filter((item) =>
-				typeNameArr.includes(item.equipmentTypeName)
-			);
+			let newlist = [];
+			_getCateList(res.data, newlist);
+			console.log(newlist);
 			if (newlist && newlist.length) {
 				if (!formQuery.equipmentTypeId) {
 					equipmentTypeName.value = newlist[0]['equipmentTypeName'];
@@ -658,11 +658,11 @@ const getDemandList = async () => {
 	);
 	let data = res.data;
 	demandObj.applicationSceneList = data.applicationSceneList;
-  demandObj.bucketCapacityDemandList = data.bucketCapacityDemandList;
-  demandObj.maxReachRangeList = data.maxReachRangeList.map((item, index) => {
-    if (item) {
-      return item;
-    }
+	demandObj.bucketCapacityDemandList = data.bucketCapacityDemandList;
+	demandObj.maxReachRangeList = data.maxReachRangeList.map((item, index) => {
+		if (item) {
+			return item;
+		}
 	});
 	demandObj.workItemsList = data.workItemsList;
 };
@@ -846,6 +846,17 @@ const handleSortChange = async (item: any) => {
 	if (res.code == 200) {
 		getProductList();
 	}
+};
+
+const _getCateList = (data, ret = []) => {
+	data.forEach((item) => {
+		if (item.displayType && item.displayType == 1) {
+			ret.push(item);
+		}
+		if (item.children && item.children.length) {
+			return _getCateList(item.children, ret);
+		}
+	});
 };
 </script>
 

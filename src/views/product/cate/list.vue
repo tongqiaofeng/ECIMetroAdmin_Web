@@ -22,6 +22,7 @@
 						prop="equipmentTypeName"
 						align="left"
 					/>
+
 					<el-table-column label="图片(电脑端)" prop="imgPc" align="center">
 						<template #default="{ row }">
 							<el-image
@@ -46,6 +47,15 @@
 								preview-teleported
 								:preview-src-list="previewList(row.imgMobile)"
 							/>
+						</template>
+					</el-table-column>
+					<el-table-column
+						label="是否显示到产品"
+						prop="displayType"
+						align="center"
+					>
+						<template #default="{ row }">
+							<span>{{ row.displayType == 1 ? '是' : '否' }}</span>
 						</template>
 					</el-table-column>
 					<el-table-column label="操作" align="center" width="250">
@@ -110,6 +120,12 @@
 						:disabled="limitDel(formData.equipmentTypeName)"
 					/>
 				</el-form-item>
+				<el-form-item prop="displayType" label="是否显示到产品">
+					<el-radio-group v-model="formData.displayType">
+						<el-radio :label="1">是</el-radio>
+						<el-radio :label="0">否</el-radio>
+					</el-radio-group>
+				</el-form-item>
 				<el-form-item prop="imgPc" label="图片(pc端)：">
 					<upload-file
 						:fileList="picPcArr"
@@ -137,14 +153,6 @@
 					></upload-file>
 					<span class="notice">提示:请添加16:9比例的图片</span>
 				</el-form-item>
-				<!-- <el-form-item prop="video" label="视频：">
-					<upload-file
-						:fileList="videoArr"
-						:type="'video'"
-						@fileChange="handleVideoChange"
-						v-if="dialogStatus"
-					></upload-file>
-				</el-form-item> -->
 				<el-form-item prop="content" label="内容：">
 					<TEdtior ref="editorCpnRef" :content="editorContent" />
 				</el-form-item>
@@ -189,6 +197,7 @@ const formData = reactive({
 	imgPc: '',
 	imgMobile: '',
 	imgSort: '',
+	displayType: 0, // 类型是否显示到产品
 });
 const editorContent = ref('');
 
@@ -215,9 +224,9 @@ const formRef = ref(null);
 const delStyle = {
 	cursor: 'not-allowed',
 };
-
-// 限制操作
-const typeNameArr = ['挖掘机&非挖', '山工机械', '二手设备'];
+ 
+// 限制操作 '机械设备', '山工机械', '二手设备'
+const typeNameArr = [];
 const limitDel = computed(() => {
 	return (value) => {
 		if (value) {
@@ -249,7 +258,7 @@ const getProductCateList = async () => {
 	const result = [];
 	result[0] = { equipmentTypeName: '顶级', id: -1, parentId: -1 };
 	result[0]['children'] = list.value;
-  typeList.value = result;
+	typeList.value = result;
 };
 getProductCateList();
 
@@ -288,6 +297,7 @@ const showDialog = (status: string, item?: any) => {
 		resetObjValues(formData);
 		formData.content = '';
 		editorContent.value = '';
+		formData.displayType = 0;
 	}
 };
 

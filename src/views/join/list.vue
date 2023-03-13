@@ -54,6 +54,19 @@
 							<el-tag type="info" v-if="row.state == -1">已撤销</el-tag>
 						</template>
 					</el-table-column>
+					<el-table-column label="排序" align="center" width="120">
+						<template #default="{ row }">
+							<el-input
+								type="text"
+								v-model="row.sort"
+								:input-style="inputStyle"
+								:min="0"
+								:maxlength="4"
+								oninput="value=value.replace(/[^\d]/g,'')"
+								@blur="handleSortChange(row)"
+							/>
+						</template>
+					</el-table-column>
 					<el-table-column label="职位类别" prop="jobCategory" align="center" />
 					<el-table-column
 						sortable
@@ -106,6 +119,7 @@
 					<el-input
 						type="text"
 						size="large"
+						class="input-width"
 						clearable
 						v-model="formData.name"
 						placeholder="请输入职位名称"
@@ -142,10 +156,21 @@
 						value-format="YYYY-MM-DD"
 					/>
 				</el-form-item>
+				<el-form-item prop="srot" label="排序：">
+					<el-input
+						type="number"
+						class="input-width"
+						placeholder="请输入排序"
+						size="large"
+						v-model="formData.sort"
+					>
+					</el-input>
+				</el-form-item>
 				<el-form-item prop="jobCategory" label="职位类别：">
 					<el-input
 						type="text"
 						size="large"
+						class="input-width"
 						clearable
 						v-model="formData.jobCategory"
 						placeholder="请输入职位类别(如:维修类)"
@@ -155,6 +180,7 @@
 					<el-input
 						type="text"
 						size="large"
+						class="input-width"
 						clearable
 						v-model="formData.workLocation"
 						placeholder="请输入工作地点"
@@ -163,6 +189,7 @@
 				<el-form-item prop="content" label="招聘介绍：">
 					<el-input
 						type="textarea"
+						class="input-width"
 						size="large"
 						v-model="formData.content"
 						placeholder="请输入招聘介绍"
@@ -220,6 +247,7 @@ const formData = reactive({
 	workLocation: '', // 工作地点
 	jobCategory: '', // 职位类别；例如：维修类
 	content: '',
+	sort: 100,
 });
 const majorlist = [
 	'小学',
@@ -269,6 +297,10 @@ const dialogStatus = ref(false);
 const mode = ref('add');
 const formRef = ref(null);
 
+const inputStyle: any = {
+	textAlign: 'center',
+};
+
 // 招聘列表
 const getJoinList = async () => {
 	const { data: res } = await ToolApi.joinSearch(formQuery);
@@ -288,9 +320,9 @@ const showDialog = (status: string, item?: any) => {
 	dialogStatus.value = true;
 	if (status == 'edit') {
 		Object.assign(formData, item);
-  } else {
-    resetObjValues(formData);
-    formData.state = 0;
+	} else {
+		resetObjValues(formData);
+		formData.state = 0;
 		formData.createTime = getDateNow();
 	}
 };
@@ -302,8 +334,8 @@ const handleCurrentChange = (page: number) => {
 };
 
 const handleDialogClose = () => {
-  formRef.value?.resetFields();
-  resetObjValues(formData);
+	formRef.value?.resetFields();
+	resetObjValues(formData);
 };
 
 const postFormData = () => {
@@ -340,6 +372,17 @@ const confirmDel = async (delId) => {
 		} else {
 			ElMessage.warning('删除失败');
 		}
+	}
+};
+
+const handleSortChange = async (item: any) => {
+	let params = {
+		id: item.id,
+		sort: Number(item.sort),
+	};
+	const { data: res } = await ToolApi.joinSortSave(params);
+	if (res.code == 200) {
+		getJoinList();
 	}
 };
 </script>

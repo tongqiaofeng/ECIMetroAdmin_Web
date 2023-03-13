@@ -18,7 +18,7 @@
 						placeholder="请输入文章标题"
 						size="large"
 						v-model="formData.title"
-            clearable
+						clearable
 					/>
 				</el-form-item>
 				<el-form-item prop="createTime" label="发布时间：">
@@ -45,6 +45,16 @@
 						<el-radio :label="0">自建</el-radio>
 						<el-radio :label="1">服务号推送</el-radio>
 					</el-radio-group>
+				</el-form-item>
+				<el-form-item prop="srot" label="排序：">
+					<el-input
+						type="number"
+						class="input-width"
+						placeholder="请输入排序"
+						size="large"
+						v-model="formData.sort"
+					>
+					</el-input>
 				</el-form-item>
 				<el-form-item prop="type" label="活动类型：">
 					<el-select class="input-width" size="large" v-model="formData.type">
@@ -109,7 +119,8 @@ const formData = reactive({
 	type: '', // 类型
 	content: '',
 	editorContent: '',
-	link: '', // 服务号链接
+  link: '', // 服务号链接
+  sort: 100, // 排序
 });
 const pics = ref([]);
 const editorContent = ref('');
@@ -154,7 +165,8 @@ const getActivityDetail = async (id: any) => {
 	formData.title = data.title;
 	formData.source = data.source;
 	formData.type = data.type;
-	formData.createTime = data.createTime;
+  formData.createTime = data.createTime;
+  formData.sort = data.sort;
 	if (data.coverPhoto) {
 		formData.coverPhoto = data.coverPhoto;
 		pics.value = data.coverPhoto.split('|');

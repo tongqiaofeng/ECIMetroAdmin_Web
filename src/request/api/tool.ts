@@ -59,13 +59,17 @@ export const joinSearch = (data: object) => {
 
 /**
  * 招聘删除
- * @param id 
- * @returns 
+ * @param id
+ * @returns
  */
 export const joinDel = (id: number) => {
 	return get('/join/joinDel', {
 		id,
 	});
+};
+
+export const joinSortSave = (data) => {
+	return post('/join/joinSortSave', data);
 };
 
 /**
@@ -90,7 +94,7 @@ export const leaseRecordDel = (id: number) => {
 
 /**
  * 邮箱地址列表
- * @returns 
+ * @returns
  */
 export const emailList = () => {
 	return get('/join/emailList');
@@ -98,13 +102,12 @@ export const emailList = () => {
 
 /**
  * 邮件发送
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const leaseSendEmail = (data: object) => {
-  return post('/join/leaseSendEmail', data);
-}
-
+	return post('/join/leaseSendEmail', data);
+};
 
 /**
  * 系统配置详情
@@ -121,5 +124,3 @@ export const websiteConfigGet = () => {
 export const websiteConfigSave = (data: object) => {
 	return post('/config/websiteConfigSave', data);
 };
-
-

@@ -66,3 +66,7 @@ export const articleDel = (id: number) => {
 		id,
 	});
 };
+
+export const sortSave = (data) => {
+	return post('/news/articleSortSave', data);
+};

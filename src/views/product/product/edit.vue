@@ -91,7 +91,6 @@
 								v-model="formData.sort"
 							>
 							</el-input>
-							<!-- <span class="notice">提示：值越大越靠前</span> -->
 						</el-form-item>
 						<el-form-item prop="imgUrl" label="图片：">
 							<UploadFile
@@ -1308,11 +1307,11 @@ const formDataRules = reactive({
 		trigger: ['click', 'change'],
 	},
 	series: { required: true, message: '请选择/输入系列', trigger: 'change' },
-	retailPrice: {
-		required: true,
-		message: '请输入厂商零售价',
-		trigger: 'change',
-	},
+	// retailPrice: {
+	// 	required: true,
+	// 	message: '请输入厂商零售价',
+	// 	trigger: 'change',
+	// },
 	recyclePrice: {
 		required: true,
 		message: '请输入设备报价',
@@ -1422,9 +1421,8 @@ const getProductCateList = async () => {
 	const { data: res } = await ProductApi.equipmentTypeListGet();
 	if (res.code == 200) {
 		if (res.data && res.data.length) {
-			const newlist = res.data.filter((item) =>
-				typeNameArr.includes(item.equipmentTypeName)
-			);
+			let newlist = [];
+			_getCateList(res.data, newlist);
 			if (newlist && newlist.length) {
 				// 二手设备id
 				let recycleTargetIndex = newlist.findIndex(
@@ -2085,6 +2083,17 @@ const copyDataUrl = async () => {
 	} else {
 		ElMessage.warning('请填写或选择文件');
 	}
+};
+
+const _getCateList = (data, ret = []) => {
+	data.forEach((item) => {
+		if (item.displayType && item.displayType == 1) {
+			ret.push(item);
+		}
+		if (item.children && item.children.length) {
+			return _getCateList(item.children, ret);
+		}
+	});
 };
 </script>
 
